@@ -22,12 +22,8 @@ namespace EAPI.DTO
         public bool HasPreviousPage { get { return (PageIndex > 0); } }
         public bool HasNextPage { get { return ((PageIndex + 1) < TotalPages); } }
 
-
-
-
         public static async Task<ApiResult<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
-
             var count = await source.CountAsync();
             source = source.Skip(pageIndex * pageSize).Take(pageSize);
             var data = await source.ToListAsync();

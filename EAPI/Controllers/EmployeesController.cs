@@ -18,15 +18,11 @@ namespace EAPI.Controllers
 
         // GET
         [HttpGet]
-        public async Task<ActionResult<List<Employee>>> Get(int pageIndex = 0, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<Employee>>> Get(int pageIndex = 0, int pageSize = 10)
         {
-            var query = context.Employees.AsQueryable();
-
-            var recordCount = await query.CountAsync();
-
-            query = context.Employees.Skip(pageIndex * pageSize).Take(pageSize).OrderBy(x => x.Name);
-
-            return await query.ToListAsync();
+            return await ApiResult<Employee>.CreateAsync(
+            context.Employees.AsNoTracking(),
+            pageIndex, pageSize);
 
         }
 
