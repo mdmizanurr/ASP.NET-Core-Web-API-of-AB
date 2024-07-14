@@ -13,7 +13,6 @@ namespace EAPI.DTO
             TotalPages = (int)Math.Ceiling(count / (double)PageSize);
         }
 
-
         public List<T> Data { get; private set; }
         public int PageIndex { get; private set; }
         public int PageSize { get; private set; }
