@@ -21,14 +21,14 @@ builder.Services.AddCors(options =>
 
 });
 
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         //options.JsonSerializerOptions.WriteIndented = true;
     });
+
 builder.Services.AddSingleton<IEmployeeRepository, InMemoryRepository>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

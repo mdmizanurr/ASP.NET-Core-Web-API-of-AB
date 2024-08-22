@@ -18,11 +18,10 @@ namespace EAPI.Controllers
 
         // GET
         [HttpGet]
-        public async Task<ActionResult<ApiResult<Employee>>> Get(int pageIndex = 0, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<Employee>>> Get(int pageIndex = 0, int pageSize = 10, string? sortColumn = null, string? sortOrder = null)
         {
-            return await ApiResult<Employee>.CreateAsync(
-            context.Employees.AsNoTracking(),
-            pageIndex, pageSize);
+            return await ApiResult<Employee>.CreateAsync(context.Employees.AsNoTracking(),
+                                                pageIndex, pageSize, sortColumn, sortOrder);
 
         }
 
