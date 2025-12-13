@@ -39,10 +39,8 @@ namespace EAPI.DTO
         {
             if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterQuery) && IsValidProperty(filterColumn))
             {
-                //source = source.Where(string.Format("{0}.StartsWith(@0)", filterColumn), filterQuery);
-                source = source.Where(string.Format("{0}.Contains(@0)", filterColumn), filterQuery);
-
-
+                source = source.Where(string.Format("{0}.StartsWith(@0)", filterColumn), filterQuery);
+                //source = source.Where(string.Format("{0}.Contains(@0)", filterColumn), filterQuery);
             }
 
             var count = await source.CountAsync();

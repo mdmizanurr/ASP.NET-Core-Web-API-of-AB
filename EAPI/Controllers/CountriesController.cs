@@ -3,6 +3,7 @@ using EAPI.DTO;
 using EAPI.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace EAPI.Controllers
 {
@@ -34,16 +35,43 @@ namespace EAPI.Controllers
 
         // GET: api/Countries/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Country>> GetCountry(int id)
+        // public async Task<ActionResult<Country>> GetCountry(int id)
+        public async Task<ActionResult<ApiResult<Country>>> GetCountry(int id)
         {
-            var country = await _context.Countries.FindAsync(id);
+            //var country = await _context.Countries.FindAsync(id);
+
+            //   var dto = new IndexData();
+
+            //var dto = await _context.Countries
+            //       .Include(c => c.Cities).SingleAsync(i => i.Id == id);
+
+            //var dto = await _context.Countries.Where(x => x.Id == id)
+            //       .Include(c => c.Cities).ToListAsync();
+
+            //var dto = await _context.Countries
+            //       .Include(c => c.Cities).SelectMany(s => s.Cities.Where(s => s.CountryId == id))
+            //       .Select(i => new { i.Id, i.Name, i.Lat, i.Lon, i.CountryId }).ToListAsync();
+
+            //var country = await ApiResult<Country>.CreateAsync(
+            //        _context.Countries.Where(i => i.Id == id).Include(c => c.Cities).AsNoTracking(),
+            //     0,
+            //     10
+            //    );
+
+
+            var country = await _context.Countries.Where(i => i.Id == id)
+                   .Include(c => c.Cities).ToListAsync();
+
 
             if (country == null)
             {
                 return NotFound();
             }
 
-            return country;
+            //return dto == null ? NotFound() : Ok(dto);
+
+            return Ok(country);
+
         }
 
         // PUT: api/Countries/5

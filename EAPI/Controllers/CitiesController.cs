@@ -1,12 +1,14 @@
 ﻿using EAPI.Data;
 using EAPI.DTO;
 using EAPI.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
+    [Route("api/Cities")]
     [ApiController]
     public class CitiesController : ControllerBase
     {
@@ -17,24 +19,24 @@ namespace EAPI.Controllers
             _context = context;
         }
 
+
         // GET: api/Cities
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<ApiResult<City>>> GetCities(int pageIndex = 0,
-            int pageSize = 10, string? sortColumn = null, string? sortOrder = null, string? filterColumn = null, string? filterQuery = null)
+        public async Task<ActionResult<ApiResult<City>>> GetCities(int pageIndex = 0, int pageSize = 10, string? sortColumn = null,
+                                                                    string? sortOrder = null, string? filterColumn = null, string? filterQuery = null)
         {
-            return await ApiResult<City>.CreateAsync(
-                _context.Cities
-                .AsNoTracking()
-                , pageIndex
-                , pageSize
-                , sortColumn
-                , sortOrder
-                , filterColumn
-                , filterQuery
-                );
+            return await ApiResult<City>.CreateAsync(_context.Cities
+                                                    .AsNoTracking(),
+                                                        pageIndex,
+                                                        pageSize,
+                                                        sortColumn,
+                                                        sortOrder,
+                                                        filterColumn,
+                                                        filterQuery);
         }
 
-        // GET: api/Cities/5
+        // GET: api/Cities/5      
         [HttpGet("{id}")]
         public async Task<ActionResult<City>> GetCity(int id)
         {
@@ -50,6 +52,8 @@ namespace EAPI.Controllers
 
         // PUT: api/Cities/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        [Authorize("RegisteredUser")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCity(int id, City city)
         {
@@ -79,10 +83,11 @@ namespace EAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Cities
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        [Authorize("RegisteredUser")]
         [HttpPost]
-        public async Task<ActionResult<City>> PostCity(City city)
+        [Route("AddCity")]
+        public async Task<ActionResult<City>> AddCity(City city)
         {
             _context.Cities.Add(city);
             await _context.SaveChangesAsync();
@@ -91,6 +96,8 @@ namespace EAPI.Controllers
         }
 
         // DELETE: api/Cities/5
+
+        [Authorize("Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
@@ -110,5 +117,22 @@ namespace EAPI.Controllers
         {
             return _context.Cities.Any(e => e.Id == id);
         }
+
+        // Duplicate Check
+
+        [HttpPost]
+        [Route("IsDuplicateCity")]
+        public bool IsDuplicateCity(City city)
+        {
+            return _context.Cities.Any(e =>
+            e.Name == city.Name
+            && e.Lat == city.Lat
+            && e.Lon == city.Lon
+            && e.CountryId == city.CountryId
+            && e.Id != city.Id
+            );
+        }
+
+
     }
 }
